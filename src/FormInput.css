@@ -2,7 +2,7 @@
     display: flex;
     margin: 24px;
     font-size: 24px;
-    justify-content: center;
+    justify-content: space-between;
 
     > label {
         margin-right: 16px;

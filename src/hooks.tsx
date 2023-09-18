@@ -1,10 +1,45 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+// const promiseCall = new Promise((resolve, reject) => {
+//     fet
+// })
+
+// fetch('https://run.mocky.io/v3/eaf11838-69e7-4937-9e4f-b8ec9d117c73')
+
+// useEffect(() => {
+//     fetch('https://run.mocky.io/v3/eaf11838-69e7-4937-9e4f-b8ec9d117c73')
+//     .then((response) => {
+//         // we can only excecute response.json() one time
+//         // so if we use response.json() in console.log before returning
+//         // that will throw an error
+//         return response.json();
+//     })
+//     .then((data) => {
+//         const inputFields = data.fields
+//         const initialFormState = inputFields.map((field) => {
+//             return {...field, validated: false}
+//         })
+//         setFormFieldState(initialFormState)
+//     })
+//     .catch((error) => {
+//         console.log(error)
+//     })
+
+// },[])
+
+const getLocallyStoredFormValues = useCallback(() => {
+    const locallyStoredFormValues = localStorage.getItem('myform')
+    if(!locallyStoredFormValues) {
+        return null;
+    } else  return JSON.parse(locallyStoredFormValues)
+},[])
 
 export const useFormStateAndValidate = (inputFields) => {
     const [isSubmitValid, setIsSubmitValid] = useState(false);
     const [formFieldState, setFormFieldState] = useState(inputFields.map((field) => {
         return {...field, validated: false}
     }));
+    const [formValues, setFormValues] = useState(getLocallyStoredFormValues())
 
     const validateForm = useCallback((labelName: string, fieldValue: any) => { 
         let isCurrentFieldValidated: boolean = false;
@@ -50,6 +85,7 @@ export const useFormStateAndValidate = (inputFields) => {
     },[formFieldState])
 
     return {
+        formValues: formValues,
         isSubmitValid: isSubmitValid,
         validateForm: validateForm
     }
