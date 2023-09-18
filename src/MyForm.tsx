@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import './MyForm.css'
-import FormInput from './FormInput.tsx'
+import FormInput from "./FormInput.tsx"
+import { useFormStateAndValidate } from "./hooks.tsx";
 
 interface FieldProps {
     labelName: string,
@@ -10,10 +11,14 @@ interface FieldProps {
 
 const inputFields: FieldProps[] = [
     {labelName: 'Name', inputType: 'text', placeHolder: 'Name'}, 
-    {labelName: 'Age', inputType: 'number', placeHolder: '0'}
+    {labelName: 'Age', inputType: 'number', placeHolder: '0'},
+    {labelName: 'DOB', inputType: 'text', placeHolder: 'DD/MM/YYYY'}
 ]
 
 const MyForm = () => {
+    
+    const {isSubmitValid, validateForm} = useFormStateAndValidate(inputFields);
+
     return (
         <div className="MainFormContainer">
             <div className="CustomForm">
@@ -22,15 +27,17 @@ const MyForm = () => {
                     {inputFields.map((field, index) => {
                         return (
                             <FormInput 
+                                key={`field_${index}`}
                                 labelName={field.labelName} 
                                 inputType={field.inputType}
                                 placeHolder={field.placeHolder}
+                                validateForm={validateForm}
                             />
                         )
                     })}
                 </div>
                 <div className="SubmitButton">
-                    <button>SUBMIT</button>
+                    <button disabled={!isSubmitValid}>SUBMIT</button>
                 </div>
             </div>
         </div>

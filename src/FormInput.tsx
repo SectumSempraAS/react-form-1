@@ -5,15 +5,17 @@ import './FormInput.css'
 interface FormInputProps {
     labelName: string,
     inputType: string,
-    placeHolder: string
+    placeHolder: string,
+    validateForm: CallableFunction
 }
 
-const FormInput:FC<FormInputProps> = ({labelName, inputType, placeHolder}) => {
-    const [value, setValue] = useState(placeHolder);
+const FormInput:FC<FormInputProps> = ({labelName, inputType, placeHolder, validateForm}) => {
+    const [value, setValue] = useState();
 
     const handleFormInputChange = useCallback((e) => {
         setValue(e.target.value)
-    },[value])
+        validateForm(labelName, e.target.value)
+    },[value, validateForm])
 
     return (
         <div className="FormInput">
