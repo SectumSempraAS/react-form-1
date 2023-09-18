@@ -27,19 +27,12 @@ import { useCallback, useEffect, useState } from "react";
 
 // },[])
 
-const getLocallyStoredFormValues = useCallback(() => {
-    const locallyStoredFormValues = localStorage.getItem('myform')
-    if(!locallyStoredFormValues) {
-        return null;
-    } else  return JSON.parse(locallyStoredFormValues)
-},[])
 
 export const useFormStateAndValidate = (inputFields) => {
     const [isSubmitValid, setIsSubmitValid] = useState(false);
     const [formFieldState, setFormFieldState] = useState(inputFields.map((field) => {
         return {...field, validated: false}
     }));
-    const [formValues, setFormValues] = useState(getLocallyStoredFormValues())
 
     const validateForm = useCallback((labelName: string, fieldValue: any) => { 
         let isCurrentFieldValidated: boolean = false;
@@ -85,7 +78,6 @@ export const useFormStateAndValidate = (inputFields) => {
     },[formFieldState])
 
     return {
-        formValues: formValues,
         isSubmitValid: isSubmitValid,
         validateForm: validateForm
     }
