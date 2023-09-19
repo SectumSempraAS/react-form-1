@@ -59,7 +59,7 @@ export const useFormStateAndValidate = (inputFields) => {
             }
         })
 
-        console.log(formFieldState)
+        console.log(newFormState)
         setFormFieldState(newFormState)
 
         let countFalse = 0;

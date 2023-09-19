@@ -25,11 +25,17 @@ const FormInput:FC<FormInputProps> = ({labelName, inputType, placeHolder, valida
 
     const handleFormInputChange = useCallback((e) => {
         setValue(e.target.value)
-        validateForm(labelName, e.target.value)
     },[value, validateForm])
 
     useEffect(() => {
         localStorage.setItem(labelName, JSON.stringify(value))
+
+        const delayInputTimeout = setTimeout(() => {
+            validateForm(labelName, value);
+        }, 500);
+
+        return () => clearTimeout(delayInputTimeout);
+        
     },[value])
 
     return (
