@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
+import { InputFieldParams, FieldValue } from "./interfaces";
+import { getFormValuesState } from "./utils.ts";
 
 // const promiseCall = new Promise((resolve, reject) => {
 //     fet
@@ -27,58 +29,52 @@ import { useCallback, useEffect, useState } from "react";
 
 // },[])
 
+const inputFields: InputFieldParams[] = [
+    {id: 1, fieldName: 'username', labelName: 'Name', inputType: 'text', placeHolder: 'Name'}, 
+    {id: 2, fieldName: 'age' ,labelName: 'Age', inputType: 'number', placeHolder: '0'},
+    {id: 3, fieldName: 'dateOfBirth' ,labelName: 'DOB', inputType: 'text', placeHolder: 'DD/MM/YYYY'},
+    {id: 4, fieldName: 'email' ,labelName: 'Email', inputType: 'text', placeHolder: 'example@gmail.com'},
+    {id: 5, fieldName: 'mobileNumber' ,labelName: 'Mobile Number', inputType: 'text', placeHolder: '9462501990'}
+]
 
-export const useFormStateAndValidate = (inputFields) => {
+const checkIfAllValuesValid = (fieldValuesArray: FieldValue[]) => {
+    fieldValuesArray.forEach((fieldValue) => {
+        if(fieldValue.validated == false) {
+            return false;
+        }
+    })
+    return true;
+}
+
+export const useFormStateAndValidate = () => {
     const [isSubmitValid, setIsSubmitValid] = useState(false);
-    const [formFieldState, setFormFieldState] = useState(inputFields.map((field) => {
-        return {...field, validated: false}
-    }));
+    const [formFieldValues, setFormFieldValues] = useState<FieldValue[]>(getFormValuesState(inputFields));
 
-    const validateForm = useCallback((labelName: string, fieldValue: any) => { 
-        let isCurrentFieldValidated: boolean = false;
-
-        if(labelName == 'Name') {
-            if(typeof fieldValue == 'string' &&  /^[a-z ,.'-]+$/i.test(fieldValue)) {
-                isCurrentFieldValidated = true;
-            }
-        } else if(labelName == 'Age') {
-            if(fieldValue > 0 && fieldValue < 100) {
-                isCurrentFieldValidated = true;
-            }
-        } else if(labelName == 'DOB') {
-            if(typeof fieldValue == 'string' && /^(?:0[1-9]|[12]\d|3[01])([\/.-])(?:0[1-9]|1[012])\1(?:19|20)\d\d$/.test(fieldValue)) {
-                isCurrentFieldValidated = true;
-            }
-        }
-
-        const newFormState = formFieldState.map((field) => {
-            if(field.labelName == labelName) {
-                return {...field, validated: isCurrentFieldValidated}
+    const setFieldValues = useCallback((fieldName: string, newValue: any, isValueValid: boolean) => {
+        let invalidFieldCount = 0;
+        const newFieldValueState: FieldValue[]  = formFieldValues.map((prevStateFormField) => {
+            if(prevStateFormField.fieldName == fieldName) {
+                if(!isValueValid) invalidFieldCount++
+                return {...prevStateFormField, value: newValue, validated: isValueValid}
             } else {
-                return {...field}
+                if(!prevStateFormField.validated) invalidFieldCount++;
+                return prevStateFormField
             }
         })
 
-        console.log(newFormState)
-        setFormFieldState(newFormState)
+        setFormFieldValues(newFieldValueState)
 
-        let countFalse = 0;
-        newFormState.forEach((field) => {
-            if(field.validated == false) {
-                countFalse++;
-            }
-        })
+        console.log(newFieldValueState)
 
-        if(countFalse > 0) {
-            setIsSubmitValid(false)
-        } else {
-            setIsSubmitValid(true)
-        }
+        console.log(invalidFieldCount)
 
-    },[formFieldState])
+        if(invalidFieldCount > 0) setIsSubmitValid(false);
+        else setIsSubmitValid(true)
+    }, [formFieldValues])
 
     return {
+        inputFields: inputFields,
         isSubmitValid: isSubmitValid,
-        validateForm: validateForm
+        setFieldValues: setFieldValues,
     }
 }

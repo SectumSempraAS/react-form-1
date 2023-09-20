@@ -3,21 +3,9 @@ import './MyForm.css'
 import FormInput from "./FormInput.tsx"
 import { useFormStateAndValidate } from "./hooks.tsx";
 
-interface FieldProps {
-    labelName: string,
-    inputType: string,
-    placeHolder: string
-}
-
-const inputFields: FieldProps[] = [
-    {labelName: 'Name', inputType: 'text', placeHolder: 'Name'}, 
-    {labelName: 'Age', inputType: 'number', placeHolder: '0'},
-    {labelName: 'DOB', inputType: 'text', placeHolder: 'DD/MM/YYYY'}
-]
-
 const MyForm = () => {
     
-    const {isSubmitValid, validateForm} = useFormStateAndValidate(inputFields);
+    const {isSubmitValid, inputFields, setFieldValues} = useFormStateAndValidate();
 
     return (
         <div className="MainFormContainer">
@@ -28,10 +16,8 @@ const MyForm = () => {
                         return (
                             <FormInput 
                                 key={`field_${index}`}
-                                labelName={field.labelName} 
-                                inputType={field.inputType}
-                                placeHolder={field.placeHolder}
-                                validateForm={validateForm}
+                                inputField={field}
+                                setFieldValues={setFieldValues}
                             />
                         )
                     })}
