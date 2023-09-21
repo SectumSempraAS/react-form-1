@@ -26,6 +26,7 @@ const FormInput:FC<FormInputProps> = ({inputField, setFieldValues}) => {
     const [valid, setValid] = useState<boolean>(false);
 
     const handleFormInputChange = useCallback((e) => {
+        e.stopPropagation();
         setValue(e.target.value)
         setValid(ifFieldValueValid(e.target.value, fieldName))
     },[value])
@@ -37,7 +38,7 @@ const FormInput:FC<FormInputProps> = ({inputField, setFieldValues}) => {
             console.log('value1', value)
             console.log('valid1', valid)
             setFieldValues(fieldName, value, valid)
-        }, 500);
+        }, 1000);
 
         return () => clearTimeout(delayInputTimeout);
         
@@ -47,7 +48,6 @@ const FormInput:FC<FormInputProps> = ({inputField, setFieldValues}) => {
         <div className="FormInput">
             <label>{labelName}</label>
             <input type={inputType} value={value} onChange={handleFormInputChange}/>
-            {valid ? '' : 'This value is not valid'}
         </div>
     )
 }
