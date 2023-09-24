@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { InputFieldParams, FieldValue } from "./interfaces";
-import { getFormValuesState } from "./utils.ts";
+import { getFormValuesState } from "./utils";
 
 // const promiseCall = new Promise((resolve, reject) => {
 //     fet
